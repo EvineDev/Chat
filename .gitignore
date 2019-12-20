@@ -1,6 +1,6 @@
 ﻿# My ignore list
 *appsettings.*.json
-
+*desktop.ini
 
 
 # Visual Studio predefined
