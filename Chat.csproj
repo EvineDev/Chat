@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20191201172747_ChangedUser.cs" />
+    <Compile Remove="Migrations\20191201172747_ChangedUser.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.0.1" />
+  </ItemGroup>
+
+  <Target Name="ChatHtmlBuild" AfterTargets="AfterBuild">
+    <Copy SourceFiles="Web/index.html" DestinationFolder="$(OutDir)/Web" />
+  </Target>
+  <Target Name="ChatHtmlPublish" AfterTargets="Publish">
+    <Copy SourceFiles="Web/index.html" DestinationFolder="$(PublishDir)/Web" />
+  </Target>
+  <Target Name="ChatCssBuild" AfterTargets="AfterBuild">
+    <Copy SourceFiles="Web/style.css" DestinationFolder="$(OutDir)/Web" />
+  </Target>
+  <Target Name="ChatCssPublish" AfterTargets="Publish">
+    <Copy SourceFiles="Web/style.css" DestinationFolder="$(PublishDir)/Web" />
+  </Target>
+  <Target Name="ChatHtmlClean" AfterTargets="Clean">
+    <RemoveDir Directories="$(OutDir)/Web" />
+  </Target>
+
+</Project>

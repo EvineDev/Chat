@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wabble Chat</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>My Little Game Chat</h1>
+    </header>
+    <section id="login">
+        <form action="/login" method="post">
+            <label for="email">Email:</label>
+            <input type="text" name="email" required id="user-login" />
+            <label for="password">Password:</label>
+            <input type="password" name="password" autocomplete="current-password" required id="user-password" />
+            <label for="remember">Remember Me:</label>
+            <input type="checkbox" name="remember" />
+            <button>Login</button>
+        </form>
+    </section>
+    <section id="register">
+        <form action="/register" method="post">
+            <label for="email">Email:</label>
+            <input type="text" name="email" required />
+            <label for="username">Username:</label>
+            <input type="text" name="username" required />
+            <label for="password">Password:</label>
+            <input type="password" name="password" autocomplete="new-password" required />
+            <button>Register</button>
+        </form>
+    </section>
+    <script>
+        let cookies = Object.fromEntries(document.cookie.split('; ').map(x => x.split('=')));
+
+        function init() {
+            setupUsername();
+        }
+
+        function setupUsername() {
+            let e = document.getElementById("user-login");
+            if (cookies.username !== undefined) {
+                e.setAttribute("value", cookies.username);
+                let ePw = document.getElementById("user-password");
+                ePw.focus();
+                ePw.select();
+            } else {
+                e.focus();
+                e.select();
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
