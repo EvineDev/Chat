@@ -28,16 +28,16 @@
     <section id="settings">
         <h4>Settings</h4>
         <form action="/upload-avatar" method="post" enctype="multipart/form-data">
-            <label for="avatar">Upload avatar</label>
-            <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" />
-            <button>Submit</button>
+            <label class="label-file" for="avatar">Upload avatar</label>
+            <input class="input-file" type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" />
+            <button>Save</button>
         </form>
     </section>
     <section id="chat-input">
         <form action="/send-message" method="post">
             <label for="message"></label>
-            <textarea type="text" name="message" required></textarea>
-            <button>Send</button>
+            <textarea type="text" name="message"></textarea>
+            <button class="input-submit">Send</button>
         </form>
     </section>
     <script>
@@ -74,39 +74,51 @@
                     }).then(x => {
                         let nodes = x.map(m => {
 
-                            let span1 = document.createElement("p");
+							let messageContainer = document.createElement("div");
+							messageContainer.className = "message-container";
+							let contentContainer = document.createElement("p");
+							contentContainer.className = "message-content";
+							let avatarContainer = document.createElement("span");
+							avatarContainer.className = "message-avatar-container";
+							
 
                             let avatarElement = document.createElement("img");
-                            avatarElement.className = "avatar-message";
-                            avatarElement.src = "/api/avatar/" + m.userId;
-                            span1.append(avatarElement);
-                            
+                            avatarElement.className = "message-avatar";
+							avatarElement.src = "/api/avatar/" + m.userId;
+							avatarContainer.appendChild(avatarElement);
+							messageContainer.append(avatarContainer);
+							
+							
 
-                            let timeElement = document.createElement("time");
+							let timeElement = document.createElement("time");
                             timeElement.dateTime = m.created;
-                            timeElement.innerText = formatTime(m.created);
-                            span1.append(timeElement);
+							timeElement.innerText = formatTime(m.created);
 
-                            span1.append(" ");
+							let timeSpan = document.createElement("span");
+							timeSpan.className = "message-time";
+							timeSpan.appendChild(document.createTextNode("("));
+							timeSpan.appendChild(timeElement);
+							timeSpan.appendChild(document.createTextNode(") "));
 
-                            let userElement = document.createElement("span");
+							contentContainer.append(timeSpan);
+
+							let userElement = document.createElement("span");
+							userElement.className = "message-username";
                             userElement.innerText = m.username;
-                            span1.append(userElement);
-                            // Fix: Whitespace is not showing up, but might do a line thing anyway, 
-                            //      but i probably want space in the copy paste.
-                            span1.append(": ");
-                            let span2 = document.createElement("p");
+                            contentContainer.append(userElement);
+							contentContainer.append(": ");
 
                             let messageElement = document.createElement("span");
                             messageElement.innerText = m.message;
-                            span2.append(messageElement);
+							contentContainer.append(messageElement);
 
-                            return [span1, span2];
+							messageContainer.append(contentContainer);
+
+                            return messageContainer;
                         });
 
                         nodes.map(x => {
-                            chat.appendChild(x[0]);
-                            chat.appendChild(x[1]);
+                            chat.appendChild(x);
                         });
                     });
             }
