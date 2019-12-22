@@ -102,9 +102,9 @@ namespace Chat.Controllers
 
         [HttpPost]
         [Route("register")]
-        public ActionResult Register([FromForm]string email, [FromForm]string username, [FromForm]string password)
+        public ActionResult Register([FromForm]string email, [FromForm]string username, [FromForm]string password, [FromForm]string capcha)
         {
-            if (authService.Register(email, username, password))
+            if (authService.Register(email, username, password, capcha))
             {
                 return new RedirectResult("/");
             }

@@ -36,8 +36,12 @@ namespace Chat.Service
             //dbContext.SaveChanges();
         }
 
-        public bool Register(string email, string username, string password)
+        public bool Register(string email, string username, string password, string capcha)
         {
+			// Fix: Add proper capcha
+			if (capcha != "pony-capcha")
+				return false;
+
             var existingUser = dbContext.Users.Where(x => x.Email == email).FirstOrDefault();
             if (existingUser != null)
                 return false;
