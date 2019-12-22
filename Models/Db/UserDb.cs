@@ -25,8 +25,6 @@ namespace Chat.Db
         [Required]
         public byte[] Salt { get; set; }
 
-        public byte[] Avatar { get; set; }
-
-        public string ContentType { get; set; }
+        public BinaryDb Avatar { get; set; }
     }
 }

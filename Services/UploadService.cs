@@ -46,8 +46,11 @@ namespace Chat.Service
             var image = mem.ToArray();
 
             var session = sessionService.GetSession();
-            session.User.Avatar = image;
-            session.User.ContentType = contentTypeFiltered;
+
+			var data = new BinaryDb { Data = image, ContentType = contentTypeFiltered };
+			dbContext.Binary.Add(data);
+
+            session.User.Avatar = data;
             dbContext.SaveChanges();
 
             return true;

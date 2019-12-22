@@ -22,7 +22,9 @@ namespace Chat.Db
 
         public DbSet<MessageDb> Messages { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		public DbSet<BinaryDb> Binary { get; set; }
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<UserDb>()
             //    .HasAlternateKey(x => x.UserId);
