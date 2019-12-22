@@ -31,7 +31,7 @@ namespace Chat.Service
             // Fix: auth before logout
 
             //context.Request.Cookies.Where(x => x.Key).Single
-            //context.Response.Cookies.Delete(AUTH_SESSION);
+            context.Response.Cookies.Delete(AUTH_SESSION);
             //dbContext.Sessions.Where().Remove();
             //dbContext.SaveChanges();
         }
