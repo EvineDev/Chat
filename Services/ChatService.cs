@@ -71,8 +71,9 @@ namespace Chat.Service
             var newerThan = DateTime.UtcNow.AddMinutes(-7);
 
             var result = dbContext.Sessions
-                .Where(x => x.Created >= newerThan)
-                .Select(x => x.User)
+				// Fix: Temporality we just select all users
+				//.Where(x => x.Created >= newerThan)
+				.Select(x => x.User)
                 .Distinct()
                 .Select(x => x.Username)
                 .ToList();
