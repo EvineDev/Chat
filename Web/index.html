@@ -46,12 +46,11 @@
         function init() {
             //getDocumentInformation();
             setupChatboxInital();
-            setupActiveUsers();
-        }
+			setupActiveUsers();
+		}
 
         function setupChatboxInital() {
             getChatHistory();
-            //setInterval(getChatHistory, 1000);
 
             function getChatHistory() {
                 let chat = document.getElementById("chat-box");
@@ -119,7 +118,10 @@
 
                         nodes.map(x => {
                             chat.appendChild(x);
-                        });
+						});
+
+						// Fix: What a beatiful world
+						setTimeout(() => { chat.scrollTop = 99999999; }, 100);
                     });
             }
 
