@@ -172,10 +172,10 @@ nav {
 }
 
 .message-avatar {
+	display: block;
 	max-width: 42px;
 	max-height: 42px;
 	border-radius: 6px;
-	display: block;
 }
 
 .message-time {
@@ -192,9 +192,22 @@ nav {
 	color: #60FFFF;
 }
 
-.avatar-userlist {
-    max-width: 20px;
-    max-height: 20px;
+.userlist-container {
+	display: flex;
+	align-items: center;
+	color: #60FFFF;
+	font-weight: bold;
+}
+
+.userlist-avatar-container {
+	margin-right: 2px;
+}
+
+.userlist-avatar {
+	display: block;
+	max-width: 30px;
+	max-height: 30px;
+	border-radius: 4px;
 }
 
 .input-submit {

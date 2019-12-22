@@ -35,7 +35,7 @@ namespace Chat.Controllers
 
         [HttpGet]
         [Route("active-users/{board}")]
-        public ActionResult<IEnumerable<string>> ActiveUsers(string board)
+        public ActionResult<List<UserDto>> ActiveUsers(string board)
         {
             return chatService.GetActiveUsers(board);
         }

@@ -66,7 +66,7 @@ namespace Chat.Service
             dbContext.SaveChanges();
 		}
 
-        public List<string> GetActiveUsers(string board)
+        public List<UserDto> GetActiveUsers(string board)
         {
             var newerThan = DateTime.UtcNow.AddMinutes(-7);
 
@@ -75,7 +75,7 @@ namespace Chat.Service
 				//.Where(x => x.Created >= newerThan)
 				.Select(x => x.User)
                 .Distinct()
-                .Select(x => x.Username)
+                .Select(x => new UserDto { UserId = x.Id, Username = x.Username })
                 .ToList();
 
             return result;

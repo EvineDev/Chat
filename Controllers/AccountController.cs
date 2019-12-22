@@ -52,9 +52,4 @@ namespace Chat.Controllers
 			return new OkResult();
 		}
 	}
-
-	public class UserDto
-	{
-
-	}
 }

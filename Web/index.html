@@ -159,11 +159,23 @@
                             throw x;
                         }
                     }).then(x => {
-                        x.map(username => {
-                            let userElement = document.createElement("span");
-                            userElement.innerText = username;
-                            usersNew.appendChild(userElement);
-                            usersNew.appendChild(document.createElement("br")); // Fix: remove
+						x.map(user => {
+							let userContainer = document.createElement("div");
+							userContainer.className = "userlist-container";
+							let userElement = document.createElement("span");
+							let avatarContainer = document.createElement("span");
+							avatarContainer.className = "userlist-avatar-container";
+							let avatarElement = document.createElement("img");
+							avatarElement.className = "userlist-avatar";
+
+							avatarElement.src = "/api/avatar/" + user.userId;
+							userElement.innerText = user.username;
+
+							avatarContainer.append(avatarElement);
+							userContainer.append(avatarContainer);
+							userContainer.append(userElement);
+
+							usersNew.appendChild(userContainer);
                         });
 
                         users.replaceWith(usersNew);
