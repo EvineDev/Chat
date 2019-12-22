@@ -32,7 +32,7 @@ namespace Chat.Controllers
             string html;
 
             if (sessionService.IsAuthenticated())
-                html = System.IO.File.ReadAllText("Web/index.html");
+                html = System.IO.File.ReadAllText("Web/chat.html");
             else
                 html = System.IO.File.ReadAllText("Web/landing.html");
 
@@ -81,7 +81,7 @@ namespace Chat.Controllers
             }
             else
             {
-                var html = System.IO.File.ReadAllText("Web/index.html");
+                var html = System.IO.File.ReadAllText("Web/chat.html");
 
                 return new ContentResult
                 {

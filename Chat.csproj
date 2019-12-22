@@ -22,10 +22,10 @@
   </ItemGroup>
 
   <Target Name="ChatHtmlBuild" AfterTargets="AfterBuild">
-    <Copy SourceFiles="Web/index.html" DestinationFolder="$(OutDir)/Web" />
+    <Copy SourceFiles="Web/chat.html" DestinationFolder="$(OutDir)/Web" />
   </Target>
   <Target Name="ChatHtmlPublish" AfterTargets="Publish">
-    <Copy SourceFiles="Web/index.html" DestinationFolder="$(PublishDir)/Web" />
+    <Copy SourceFiles="Web/chat.html" DestinationFolder="$(PublishDir)/Web" />
   </Target>
   <Target Name="ChatHtmlBuild2" AfterTargets="AfterBuild">
     <Copy SourceFiles="Web/landing.html" DestinationFolder="$(OutDir)/Web" />
