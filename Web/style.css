@@ -156,14 +156,17 @@ nav {
     grid-area: register;
 }
 
-.message-container {
-	margin: 4px 0;
-	display: flex;
-	align-items: center;
+.message-overall-container {
 }
 
-.message-container:nth-child(odd) {
+.message-overall-container:nth-child(odd) {
 	background-color: #151A32;
+}
+
+.message-container {
+	display: flex;
+	align-items: center;
+	padding: 2px 0;
 }
 
 .message-avatar-container {
@@ -190,6 +193,16 @@ nav {
 .message-username {
 	font-weight: bold;
 	color: #60FFFF;
+}
+
+.image-container {
+	display: flex;
+	justify-content: center;
+}
+
+.image-message {
+	display: block;
+	max-height: 400px;
 }
 
 .userlist-container {
