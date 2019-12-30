@@ -7,6 +7,7 @@ using Chat.Service;
 using Chat.Dto;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Chat.Controllers
 {
@@ -154,9 +155,23 @@ namespace Chat.Controllers
 			<span>{EncodeHtml(message.Message)}</span>
 		</p>
 	</div>
+	{RenderHtmlMessageImages(message)}
 </div>";
 
 			return html;
+		}
+
+		private string RenderHtmlMessageImages(MessageDto message)
+		{
+			var result = "";
+			var regex = new Regex("img\"(.*?)\"");
+			var matchList = regex.Matches(message.Message);
+			foreach (Match match in matchList)
+			{
+				result += $"<div class='image-container'><img class='image-message' src='{EncodeUrl(match.Groups[1].ToString())}'></div>";
+			}
+
+			return result;
 		}
 
 		private string EncodeHtml(string text)

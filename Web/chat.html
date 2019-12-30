@@ -81,6 +81,8 @@
 					}).then(x => {
 						chatNew.innerHTML = x;
 						chat.replaceWith(chatNew);
+						// Fix: What a beatiful world
+						setTimeout(() => { chatNew.scrollTop = 99999999; }, 400);
 					});
 
       //          fetch("/api/message-history/main")
@@ -111,7 +113,7 @@
 
       //                      let avatarElement = document.createElement("img");
       //                      avatarElement.className = "message-avatar";
-						//	avatarElement.src = "/api/avatar/" + m.avaterId;
+						//	avatarElement.src = "/api/avatar/" + m.avatarId;
 						//	avatarContainer.appendChild(avatarElement);
 						//	messageContainer.append(avatarContainer);
 							
