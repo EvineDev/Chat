@@ -31,7 +31,7 @@ namespace Chat.Service
                 .OrderByDescending(x => x.Created)
                 .Take(200)
                 .OrderBy(x => x.Created) // TakeLast is not supported
-                .Select(x => new MessageDto { UserId = x.Session.User.Avatar.Id, Username = x.Session.User.Username, Board = x.Board, Message = x.Message, Created = x.Created })
+                .Select(x => new MessageDto { Username = x.Session.User.Username, AvatarId = x.Session.User.Avatar.Id, Board = x.Board, Message = x.Message, Created = x.Created })
                 .ToList();
 
             foreach (var m in result)
@@ -75,7 +75,7 @@ namespace Chat.Service
 				//.Where(x => x.Created >= newerThan)
 				.Select(x => x.User)
                 .Distinct()
-                .Select(x => new UserDto { UserId = x.Avatar.Id, Username = x.Username })
+                .Select(x => new UserDto { Username = x.Username, AvatarId = x.Avatar.Id })
                 .ToList();
 
             return result;

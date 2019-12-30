@@ -47,11 +47,9 @@
             //getDocumentInformation();
             setupChatboxInital();
 			setupActiveUsers();
-
-			messageParser(`yes img"https://derpicdn.net/img/view/2019/5/3/2029441.jpeg" yes`);
 		}
 
-		function messageParser(text) {
+		function imgParser(text) {
 			// Fix: This is a hacky hack to get images.
 			let imgRegex = /img"(.*?)"/g;
 			let imgUrl = [...text.matchAll(imgRegex)].map(x => x[1]);
@@ -65,89 +63,107 @@
             function getChatHistory() {
                 let chat = document.getElementById("chat-box");
                 let chatNew = document.createElement("div");
-                chatNew.id = "chat-box";
+				chatNew.id = "chat-box";
 
-                fetch("/api/message-history/main")
-                    .then(x => {
-                        if (x.status >= 400 && x.status < 500) {
-                            chatNew.appendChild(document.createTextNode("Unauthorized, please log-in"));
-                            chat.replaceWith(chatNew);
-                            throw x;
-                        } else if (x.status >= 200 && x.status < 300) {
-                            return x.json();
-                        } else {
-                            chatNew.appendChild(document.createTextNode("Server Error"));
-                            chat.replaceWith(chatNew);
-                            throw x;
-                        }
-                    }).then(x => {
-						let nodes = x.map(m => {
-							let messageOverallContainer = document.createElement("div");
-							messageOverallContainer.className = "message-overall-container";
+				fetch("/message-history/main")
+					.then(x => {
+						if (x.status >= 400 && x.status < 500) {
+							chatNew.appendChild(document.createTextNode("Unauthorized, please log-in"));
+							chat.replaceWith(chatNew);
+							throw x;
+						} else if (x.status >= 200 && x.status < 300) {
+							return x.text();
+						} else {
+							chatNew.appendChild(document.createTextNode("Server Error"));
+							chat.replaceWith(chatNew);
+							throw x;
+						}
+					}).then(x => {
+						chatNew.innerHTML = x;
+						chat.replaceWith(chatNew);
+					});
 
-							let messageContainer = document.createElement("div");
-							messageContainer.className = "message-container";
-							let contentContainer = document.createElement("p");
-							contentContainer.className = "message-content";
-							let avatarContainer = document.createElement("span");
-							avatarContainer.className = "message-avatar-container";
+      //          fetch("/api/message-history/main")
+      //              .then(x => {
+      //                  if (x.status >= 400 && x.status < 500) {
+      //                      chatNew.appendChild(document.createTextNode("Unauthorized, please log-in"));
+      //                      chat.replaceWith(chatNew);
+      //                      throw x;
+      //                  } else if (x.status >= 200 && x.status < 300) {
+      //                      return x.json();
+      //                  } else {
+      //                      chatNew.appendChild(document.createTextNode("Server Error"));
+      //                      chat.replaceWith(chatNew);
+      //                      throw x;
+      //                  }
+      //              }).then(x => {
+						//let nodes = x.map(m => {
+						//	let messageOverallContainer = document.createElement("div");
+						//	messageOverallContainer.className = "message-overall-container";
+
+						//	let messageContainer = document.createElement("div");
+						//	messageContainer.className = "message-container";
+						//	let contentContainer = document.createElement("p");
+						//	contentContainer.className = "message-content";
+						//	let avatarContainer = document.createElement("span");
+						//	avatarContainer.className = "message-avatar-container";
 							
 
-                            let avatarElement = document.createElement("img");
-                            avatarElement.className = "message-avatar";
-							avatarElement.src = "/api/avatar/" + m.userId;
-							avatarContainer.appendChild(avatarElement);
-							messageContainer.append(avatarContainer);
+      //                      let avatarElement = document.createElement("img");
+      //                      avatarElement.className = "message-avatar";
+						//	avatarElement.src = "/api/avatar/" + m.avaterId;
+						//	avatarContainer.appendChild(avatarElement);
+						//	messageContainer.append(avatarContainer);
 							
 							
 
-							let timeElement = document.createElement("time");
-                            timeElement.dateTime = m.created;
-							timeElement.innerText = formatTime(m.created);
+						//	let timeElement = document.createElement("time");
+      //                      timeElement.dateTime = m.created;
+						//	timeElement.innerText = formatTime(m.created);
 
-							let timeSpan = document.createElement("span");
-							timeSpan.className = "message-time";
-							timeSpan.appendChild(document.createTextNode("("));
-							timeSpan.appendChild(timeElement);
-							timeSpan.appendChild(document.createTextNode(") "));
+						//	let timeSpan = document.createElement("span");
+						//	timeSpan.className = "message-time";
+						//	timeSpan.appendChild(document.createTextNode("("));
+						//	timeSpan.appendChild(timeElement);
+						//	timeSpan.appendChild(document.createTextNode(") "));
 
-							contentContainer.append(timeSpan);
+						//	contentContainer.append(timeSpan);
 
-							let userElement = document.createElement("span");
-							userElement.className = "message-username";
-                            userElement.innerText = m.username;
-                            contentContainer.append(userElement);
-							contentContainer.append(": ");
+						//	let userElement = document.createElement("span");
+						//	userElement.className = "message-username";
+      //                      userElement.innerText = m.username;
+      //                      contentContainer.append(userElement);
+						//	contentContainer.append(": ");
 
-                            let messageElement = document.createElement("span");
-                            messageElement.innerText = m.message;
-							contentContainer.append(messageElement);
+      //                      let messageElement = document.createElement("span");
+      //                      messageElement.innerText = m.message;
+						//	contentContainer.append(messageElement);
 
-							messageContainer.append(contentContainer);
-							messageOverallContainer.append(messageContainer);
+						//	messageContainer.append(contentContainer);
+						//	messageOverallContainer.append(messageContainer);
 
-							let images = messageParser(m.message);
+						//	let images = imgParser(m.message);
 
-							images.map(x => {
-								let imageContainer = document.createElement("div");
-								imageContainer.className = "image-container";
-								let imageMessage = document.createElement("img");
-								imageMessage.className = "image-message";
+						//	images.map(x => {
+						//		let imageContainer = document.createElement("div");
+						//		imageContainer.className = "image-container";
+						//		let imageMessage = document.createElement("img");
+						//		imageMessage.className = "image-message";
 
-								// Fix: Who knows if it safe to just allow any url to be assigned to src.
-								imageMessage.src = x;
+						//		// Fix: Who knows if it safe to just allow any url to be assigned to src.
+						//		imageMessage.src = x;
 
-								imageContainer.append(imageMessage);
-								messageOverallContainer.append(imageContainer);
-							})
+						//		imageContainer.append(imageMessage);
+						//		messageOverallContainer.append(imageContainer);
+						//	})
 
-							chat.append(messageOverallContainer);
-                            return messageContainer;
-                        });
+						//	chat.append(messageOverallContainer);
+      //                      return messageContainer;
+      //                  });
 
-						// Fix: What a beatiful world
-						setTimeout(() => { chat.scrollTop = 99999999; }, 100);
-                    });
+						//// Fix: What a beatiful world
+						//setTimeout(() => { chat.scrollTop = 99999999; }, 100);
+      //              });
             }
 
             function formatTime(dateString) {
@@ -192,8 +208,7 @@
 							avatarContainer.className = "userlist-avatar-container";
 							let avatarElement = document.createElement("img");
 							avatarElement.className = "userlist-avatar";
-
-							avatarElement.src = "/api/avatar/" + user.userId;
+							avatarElement.src = "/api/avatar/" + user.avatarId;
 							userElement.innerText = user.username;
 
 							avatarContainer.append(avatarElement);

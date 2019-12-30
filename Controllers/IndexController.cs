@@ -56,7 +56,22 @@ namespace Chat.Controllers
             };
         }
 
-        [HttpPost]
+		[HttpGet]
+		[Route("message-history/{board}")]
+		public ContentResult History([FromRoute]string board)
+		{
+			var history = chatService.GetHistory(board);
+			var result = new ContentResult { ContentType = "text/html", Content = "" };
+
+			foreach (var message in history)
+			{
+				result.Content += RenderHtmlMessage(message);
+			}
+
+			return result;
+		}
+
+		[HttpPost]
         [Route("send-message")]
         public ActionResult SendMessage([FromForm]string message)
         {
@@ -123,5 +138,45 @@ namespace Chat.Controllers
 
             return new RedirectResult("/");
         }
-    }
+
+
+		// Fix: Move to helper class.
+		private string RenderHtmlMessage(MessageDto message)
+		{
+			// Fix: The message.Created is utc timezone. Get the user timezone. Or render the time in js?
+			var html = @$"
+<div class='message-overall-container'>
+	<div class='message-container'>
+		<span class='message-avatar-container'><img class='message-avatar' src='/api/avatar/{message.AvatarId}'></span>
+		<p class='message-content'>
+			<span class='message-time'>({message.Created.ToString("HH:mm")})</span>
+			<span class='message-username'>{EncodeHtml(message.Username)}</span>:
+			<span>{EncodeHtml(message.Message)}</span>
+		</p>
+	</div>
+</div>";
+
+			return html;
+		}
+
+		private string EncodeHtml(string text)
+		{
+			// Fix: make good
+			return text
+				.Replace("&", "&amp;")
+				.Replace("<", "&lt;")
+				.Replace(">", "&gt;");
+		}
+
+		private string EncodeUrl(string text)
+		{
+			// Fix: make good
+			return text
+				.Replace("\"", "%22")
+				.Replace("\'", "%27")
+				.Replace("`", "%60")
+				.Replace("\\", "\\\\");
+		}
+
+	}
 }
