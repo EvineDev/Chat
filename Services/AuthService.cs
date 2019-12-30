@@ -151,7 +151,7 @@ namespace Chat.Service
 
             var authOptions = new CookieOptions
             {
-                MaxAge = TimeSpan.FromHours(6),
+                MaxAge = TimeSpan.FromDays(61),
                 SameSite = SameSiteMode.Strict,
                 Secure = true,
                 HttpOnly = true,
