@@ -44,17 +44,8 @@
         let cookies = Object.fromEntries(document.cookie.split('; ').map(x => x.split('=')));
 
         function init() {
-            //getDocumentInformation();
             setupChatboxInital();
 			setupActiveUsers();
-		}
-
-		function imgParser(text) {
-			// Fix: This is a hacky hack to get images.
-			let imgRegex = /img"(.*?)"/g;
-			let imgUrl = [...text.matchAll(imgRegex)].map(x => x[1]);
-
-			return imgUrl
 		}
 
         function setupChatboxInital() {
@@ -84,101 +75,6 @@
 						// Fix: What a beatiful world
 						setTimeout(() => { chatNew.scrollTop = 99999999; }, 400);
 					});
-
-      //          fetch("/api/message-history/main")
-      //              .then(x => {
-      //                  if (x.status >= 400 && x.status < 500) {
-      //                      chatNew.appendChild(document.createTextNode("Unauthorized, please log-in"));
-      //                      chat.replaceWith(chatNew);
-      //                      throw x;
-      //                  } else if (x.status >= 200 && x.status < 300) {
-      //                      return x.json();
-      //                  } else {
-      //                      chatNew.appendChild(document.createTextNode("Server Error"));
-      //                      chat.replaceWith(chatNew);
-      //                      throw x;
-      //                  }
-      //              }).then(x => {
-						//let nodes = x.map(m => {
-						//	let messageOverallContainer = document.createElement("div");
-						//	messageOverallContainer.className = "message-overall-container";
-
-						//	let messageContainer = document.createElement("div");
-						//	messageContainer.className = "message-container";
-						//	let contentContainer = document.createElement("p");
-						//	contentContainer.className = "message-content";
-						//	let avatarContainer = document.createElement("span");
-						//	avatarContainer.className = "message-avatar-container";
-							
-
-      //                      let avatarElement = document.createElement("img");
-      //                      avatarElement.className = "message-avatar";
-						//	avatarElement.src = "/api/avatar/" + m.avatarId;
-						//	avatarContainer.appendChild(avatarElement);
-						//	messageContainer.append(avatarContainer);
-							
-							
-
-						//	let timeElement = document.createElement("time");
-      //                      timeElement.dateTime = m.created;
-						//	timeElement.innerText = formatTime(m.created);
-
-						//	let timeSpan = document.createElement("span");
-						//	timeSpan.className = "message-time";
-						//	timeSpan.appendChild(document.createTextNode("("));
-						//	timeSpan.appendChild(timeElement);
-						//	timeSpan.appendChild(document.createTextNode(") "));
-
-						//	contentContainer.append(timeSpan);
-
-						//	let userElement = document.createElement("span");
-						//	userElement.className = "message-username";
-      //                      userElement.innerText = m.username;
-      //                      contentContainer.append(userElement);
-						//	contentContainer.append(": ");
-
-      //                      let messageElement = document.createElement("span");
-      //                      messageElement.innerText = m.message;
-						//	contentContainer.append(messageElement);
-
-						//	messageContainer.append(contentContainer);
-						//	messageOverallContainer.append(messageContainer);
-
-						//	let images = imgParser(m.message);
-
-						//	images.map(x => {
-						//		let imageContainer = document.createElement("div");
-						//		imageContainer.className = "image-container";
-						//		let imageMessage = document.createElement("img");
-						//		imageMessage.className = "image-message";
-
-						//		// Fix: Who knows if it safe to just allow any url to be assigned to src.
-						//		imageMessage.src = x;
-
-						//		imageContainer.append(imageMessage);
-						//		messageOverallContainer.append(imageContainer);
-						//	})
-
-						//	chat.append(messageOverallContainer);
-      //                      return messageContainer;
-      //                  });
-
-						//// Fix: What a beatiful world
-						//setTimeout(() => { chat.scrollTop = 99999999; }, 100);
-      //              });
-            }
-
-            function formatTime(dateString) {
-                let date = new Date(dateString);
-                let hour = date.getHours();
-                if (hour < 10)
-                    hour = "0" + hour;
-                let minutes = date.getMinutes();
-                if (minutes < 10)
-                    minutes = "0" + minutes;
-                let result = `${hour}:${minutes}`;
-
-                return result;
             }
         }
 
@@ -223,79 +119,7 @@
                         users.replaceWith(usersNew);
                     });
             }
-        }
-        
-        function getDocumentInformation() {
-            // Fix: Merge the results of html and css. We need proper css parsing first.
-            let idList = {};
-            let classList = {};
-
-            let idListCss = {};
-            let classListCss = {};
-
-            iterateDocHtml(document);
-            iterateDocCSS();
-
-            printInfo();
-
-
-            function printInfo() {
-                console.log("-- html");
-
-                for (let id in idList) {
-                    console.log("#" + id);
-                }
-
-                for (let className in classList) {
-                    console.log("." + className);
-                }
-
-                console.log("-- css");
-
-                for (let id in idListCss) {
-                    console.log(id);
-                }
-
-                for (let className in classListCss) {
-                    console.log(className);
-                }
-            }
-
-            function iterateDocHtml(d) {
-                if (d.all === undefined) {
-                    return;
-                }
-                for (let v of d.all) {
-                    if (v.id !== "") {
-                        if (idList[v.id]) {
-                            console.log("Duplicate Id: #" + v.id);
-                        }
-                        idList[v.id] = true;
-                    }
-
-                    if (v.classList.length > 0) {
-                        for (let c of v.classList) {
-                            classList[c] = true;
-                        }
-                    }
-                    iterateDocHtml(v);
-                }
-            }
-
-            function iterateDocCSS() {
-                // Fix: Does media queries affect what we get?
-                for (let css of document.styleSheets[0].cssRules) {
-                    // Fix: We need to parse the selectorText to get id / classes accurately
-                    if (css.selectorText.includes("#")) {
-                        idListCss[css.selectorText] = true;
-                    }
-
-                    if (css.selectorText.includes(".")) {
-                        classListCss[css.selectorText] = true;
-                    }
-                }
-            }
-        }
+		}
 
         init();
     </script>
