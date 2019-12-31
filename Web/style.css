@@ -190,6 +190,10 @@ nav {
 	color: #60FFFF;
 }
 
+.message-text {
+	white-space: pre-line;
+}
+
 .image-container {
 	display: flex;
 	justify-content: center;

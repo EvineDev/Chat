@@ -169,7 +169,7 @@ namespace Chat.Controllers
 		<p class='message-content'>
 			<time class='message-time' datetime='{message.Created.ToString("yyyy-MM-ddTHH:mm:ssZ")}'>({message.Created.ToString("HH:mm")} UTC)</time>
 			<span class='message-username'>{EncodeHtml(message.Username)}</span>:
-			<span>{messageFinal}</span>
+			<span class='message-text'>{messageFinal}</span>
 		</p>
 	</div>
 	{RenderHtmlMessageImages(message)}
