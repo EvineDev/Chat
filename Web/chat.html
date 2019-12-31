@@ -71,10 +71,29 @@
 						}
 					}).then(x => {
 						chatNew.innerHTML = x;
+
+						let timeElements = chatNew.querySelectorAll("time");
+						for (let time of timeElements) {
+							time.innerText = `(${formatTime(time.dateTime)})`;
+						}
+
 						chat.replaceWith(chatNew);
 						// Fix: What a beatiful world
 						setTimeout(() => { chatNew.scrollTop = 99999999; }, 400);
 					});
+
+				function formatTime(dateString) {
+					let date = new Date(dateString);
+					let hour = date.getHours();
+					if (hour < 10)
+						hour = "0" + hour;
+					let minutes = date.getMinutes();
+					if (minutes < 10)
+						minutes = "0" + minutes;
+					let result = `${hour}:${minutes}`;
+
+					return result;
+				}
             }
         }
 

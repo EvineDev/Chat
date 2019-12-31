@@ -150,7 +150,7 @@ namespace Chat.Controllers
 	<div class='message-container'>
 		<span class='message-avatar-container'><img class='message-avatar' src='/api/avatar/{message.AvatarId}'></span>
 		<p class='message-content'>
-			<span class='message-time'>({message.Created.ToString("HH:mm")})</span>
+			<time class='message-time' datetime='{message.Created.ToString("yyyy-MM-ddTHH:mm:ssZ")}'>({message.Created.ToString("HH:mm")} UTC)</time>
 			<span class='message-username'>{EncodeHtml(message.Username)}</span>:
 			<span>{EncodeHtml(message.Message)}</span>
 		</p>
