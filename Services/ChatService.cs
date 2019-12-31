@@ -29,7 +29,7 @@ namespace Chat.Service
                 .Where(x => x.Board == board)
                 .Where(x => x.Created >= limit)
                 .OrderByDescending(x => x.Created)
-                .Take(200)
+                .Take(2000)
                 .OrderBy(x => x.Created) // TakeLast is not supported
                 .Select(x => new MessageDto { Username = x.Session.User.Username, AvatarId = x.Session.User.Avatar.Id, Board = x.Board, Message = x.Message, Created = x.Created })
                 .ToList();
@@ -68,17 +68,21 @@ namespace Chat.Service
 
         public List<UserDto> GetActiveUsers(string board)
         {
-            var newerThan = DateTime.UtcNow.AddMinutes(-7);
+			var username = authService.GetSession().User.Username;
 
-            var result = dbContext.Sessions
+			var newerThan = DateTime.UtcNow.AddMinutes(-7);
+
+			var result = dbContext.Sessions
 				// Fix: Temporality we just select all users
 				//.Where(x => x.Created >= newerThan)
 				.Select(x => x.User)
-                .Distinct()
-                .Select(x => new UserDto { Username = x.Username, AvatarId = x.Avatar.Id })
+				.Distinct()
+				.Take(5000)
+				.Select(x => new UserDto { Username = x.Username, AvatarId = x.Avatar.Id })
+				.OrderBy(x => x.Username != username)
                 .ToList();
 
-            return result;
+			return result;
         }
 	}
 }
