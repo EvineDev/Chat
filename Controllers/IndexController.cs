@@ -159,7 +159,9 @@ namespace Chat.Controllers
 		// Fix: Move to helper class.
 		private string RenderHtmlMessage(MessageDto message)
 		{
-			// Fix: The message.Created is utc timezone. Get the user timezone. Or render the time in js?
+			var messageHtml = EncodeHtml(message.Message);
+			var messageFinal = RenderHtmlUrl(messageHtml);
+
 			var html = @$"
 <div class='message-overall-container'>
 	<div class='message-container'>
@@ -167,7 +169,7 @@ namespace Chat.Controllers
 		<p class='message-content'>
 			<time class='message-time' datetime='{message.Created.ToString("yyyy-MM-ddTHH:mm:ssZ")}'>({message.Created.ToString("HH:mm")} UTC)</time>
 			<span class='message-username'>{EncodeHtml(message.Username)}</span>:
-			<span>{EncodeHtml(message.Message)}</span>
+			<span>{messageFinal}</span>
 		</p>
 	</div>
 	{RenderHtmlMessageImages(message)}
@@ -185,6 +187,23 @@ namespace Chat.Controllers
 </div>";
 
 			return html;
+		}
+
+		private string RenderHtmlUrl(string message)
+		{
+			var regex = new Regex("url\"(.*?)\"");
+			var result = regex.Replace(message, x => {
+				var urlText = x.Groups[1].ToString();
+				var urlLink = urlText;
+				// Fix: This is sorta ghetto, but it works as long as there isn't any :// in another part of the url.
+				if (urlLink.Contains("://") == false)
+					urlLink = "https://" + urlLink;
+
+				var html = $"<a href='{EncodeUrl(urlLink)}' target='_blank' rel='noreferrer noopener'>{EncodeHtml(urlText)}</a>";
+				return html;
+			});
+
+			return result;
 		}
 
 		private string RenderHtmlMessageImages(MessageDto message)
