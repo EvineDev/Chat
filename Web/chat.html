@@ -104,37 +104,20 @@
             function theThing() {
                 let users = document.getElementById("user-box");
                 let usersNew = document.createElement("div");
-                usersNew.id = "user-box";
-                fetch("/api/active-users/main")
+				usersNew.id = "user-box";
+				fetch("/active-users/main")
                     .then(x => {
                         if (x.status >= 400 && x.status < 500) {
                             throw x;
                         } else if (x.status >= 200 && x.status < 300) {
-                            return x.json();
+                            return x.text();
                         } else {
                             usersNew.appendChild(document.createTextNode("Server Error"));
                             users.replaceWith(usersNew);
                             throw x;
                         }
-                    }).then(x => {
-						x.map(user => {
-							let userContainer = document.createElement("div");
-							userContainer.className = "userlist-container";
-							let userElement = document.createElement("span");
-							let avatarContainer = document.createElement("span");
-							avatarContainer.className = "userlist-avatar-container";
-							let avatarElement = document.createElement("img");
-							avatarElement.className = "userlist-avatar";
-							avatarElement.src = "/api/avatar/" + user.avatarId;
-							userElement.innerText = user.username;
-
-							avatarContainer.append(avatarElement);
-							userContainer.append(avatarContainer);
-							userContainer.append(userElement);
-
-							usersNew.appendChild(userContainer);
-                        });
-
+					}).then(x => {
+						usersNew.innerHTML = x;
                         users.replaceWith(usersNew);
                     });
             }

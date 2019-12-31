@@ -72,6 +72,21 @@ namespace Chat.Controllers
 			return result;
 		}
 
+		[HttpGet]
+		[Route("active-users/{board}")]
+		public ContentResult ActiveUsers([FromRoute]string board)
+		{
+			var userList = chatService.GetActiveUsers(board);
+			var result = new ContentResult { ContentType = "text/html", Content = "" };
+
+			foreach (var user in userList)
+			{
+				result.Content += RenderHtmlUser(user);
+			}
+
+			return result;
+		}
+
 		[HttpPost]
         [Route("send-message")]
         public ActionResult SendMessage([FromForm]string message)
@@ -156,6 +171,17 @@ namespace Chat.Controllers
 		</p>
 	</div>
 	{RenderHtmlMessageImages(message)}
+</div>";
+
+			return html;
+		}
+
+		private string RenderHtmlUser(UserDto user)
+		{
+			var html = $@"
+<div class='userlist-container'>
+	<span class='userlist-avatar-container'><img class='userlist-avatar' src='/api/avatar/{user.AvatarId}'></span>
+	<span>{EncodeHtml(user.Username)}</span>
 </div>";
 
 			return html;
