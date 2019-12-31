@@ -55,19 +55,10 @@ a:hover {
 	color: #FFFFFF;
 }
 
-/*button {
-	color: inherit;
-	background-color: #252A52;
-	font-size: 1em;
-	padding: 2px 4px;
-	border: 1px solid #C5CAF2;
-	border-radius: 3px;
-}*/
-
 button {
 	color: inherit;
 	border: none;
-	background-color: #274458;
+	background-color: #2A3F6B;
 	font-size: 1em;
 	font-weight: bold;
 	padding: 2px 4px;
@@ -86,7 +77,7 @@ textarea {
 	width: calc(100% - 2px - 8px);
 	font-family: sans-serif;
 	color: inherit;
-	background-color: #14273B;
+	background-color: #1E2749;
 	resize: none;
 	height: auto;
 	border: 1px solid #CDDADE;
@@ -96,7 +87,7 @@ textarea {
 
 select {
 	color: inherit;
-	background-color: #274458;
+	background-color: #2A3F6B;
 	border: 1px none #CDDADE;
 	border-radius: 6px;
 	font-weight: bold;
@@ -106,7 +97,7 @@ select {
 /* Fix: There is slight height difference between this and button */
 /* Fix: No indication of selected file. Auto submit on selected file or list filename in input */
 .label-file {
-	background-color: #274458;
+	background-color: #2A3F6B;
 	padding: 2px 4px;
 	border-radius: 3px;
 	font-size: 1em;
