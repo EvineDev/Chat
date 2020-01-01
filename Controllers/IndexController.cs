@@ -73,6 +73,31 @@ namespace Chat.Controllers
 		}
 
 		[HttpGet]
+		[Route("message-poll/{board}/{lastId}")]
+		public ContentResult HistoryPoll([FromRoute]string board, [FromRoute]Guid? lastId)
+		{
+			if (lastId == null)
+			{
+				return new ContentResult { ContentType = "text/html", Content = "", StatusCode = 204 };
+			}
+
+			var history = chatService.GetHistory(board, lastId);
+			if (history.Any() == false)
+			{
+				return new ContentResult { ContentType = "text/html", Content = "", StatusCode = 204 };
+			}
+
+			var result = new ContentResult { ContentType = "text/html", Content = "" };
+
+			foreach (var message in history)
+			{
+				result.Content += RenderHtmlMessage(message);
+			}
+
+			return result;
+		}
+
+		[HttpGet]
 		[Route("active-users/{board}")]
 		public ContentResult ActiveUsers([FromRoute]string board)
 		{
@@ -163,7 +188,7 @@ namespace Chat.Controllers
 			var messageFinal = RenderHtmlUrl(messageHtml);
 
 			var html = @$"
-<div class='message-overall-container'>
+<div class='message-overall-container' data-message-id='{message.Id}'>
 	<div class='message-container'>
 		<span class='message-avatar-container'><img class='message-avatar' src='/api/avatar/{message.AvatarId}'></span>
 		<p class='message-content'>

@@ -42,10 +42,46 @@
     </section>
     <script>
         let cookies = Object.fromEntries(document.cookie.split('; ').map(x => x.split('=')));
+		let lastMessageId = null;
 
         function init() {
             setupChatboxInital();
 			setupActiveUsers();
+
+			//setInterval(setupMessagePolling, 1000);
+		}
+
+		function setupMessagePolling() {
+			let chat = document.getElementById("chat-box");
+			fetch("/message-poll/main/" + lastMessageId)
+				.then(x => {
+					if (x.status >= 400 && x.status < 500) {
+						chat.appendChild(document.createTextNode("Unauthorized, please log-in"));
+						throw x;
+					} else if (x.status >= 200 && x.status < 300) {
+						return x.text();
+					} else {
+						chat.appendChild(document.createTextNode("Server Error"));
+						throw x;
+					}
+				}).then(x => {
+					if (x == "") {
+						return;
+					}
+
+					chat.innerHTML += x;
+
+					let timeElements = chat.querySelectorAll("time");
+					for (let time of timeElements) {
+						time.innerText = `(${formatTime(time.dateTime)})`;
+					}
+
+					lastMessageId = chat.lastChild.dataset.messageId;
+
+					// Fix: What a beatiful world
+					setTimeout(() => { chat.scrollTop = 99999999; }, 400);
+				});
+
 		}
 
         function setupChatboxInital() {
@@ -77,23 +113,12 @@
 							time.innerText = `(${formatTime(time.dateTime)})`;
 						}
 
+						lastMessageId = chatNew.lastChild.dataset.messageId;
+
 						chat.replaceWith(chatNew);
 						// Fix: What a beatiful world
 						setTimeout(() => { chatNew.scrollTop = 99999999; }, 400);
 					});
-
-				function formatTime(dateString) {
-					let date = new Date(dateString);
-					let hour = date.getHours();
-					if (hour < 10)
-						hour = "0" + hour;
-					let minutes = date.getMinutes();
-					if (minutes < 10)
-						minutes = "0" + minutes;
-					let result = `${hour}:${minutes}`;
-
-					return result;
-				}
             }
         }
 
@@ -121,6 +146,19 @@
                         users.replaceWith(usersNew);
                     });
             }
+		}
+
+		function formatTime(dateString) {
+			let date = new Date(dateString);
+			let hour = date.getHours();
+			if (hour < 10)
+				hour = "0" + hour;
+			let minutes = date.getMinutes();
+			if (minutes < 10)
+				minutes = "0" + minutes;
+			let result = `${hour}:${minutes}`;
+
+			return result;
 		}
 
         init();

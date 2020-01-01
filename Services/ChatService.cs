@@ -20,18 +20,27 @@ namespace Chat.Service
             this.authService = authService;
         }
 
-		public List<MessageDto> GetHistory(string board)
+		public List<MessageDto> GetHistory(string board, Guid? lastId = null)
 		{
-            var limit = DateTime.UtcNow.AddHours(-36);
+			DateTime limit;
+			if (lastId == null)
+			{
+				limit = DateTime.UtcNow.AddHours(-36);
+			}
+			else
+			{
+				var lastMessage = dbContext.Messages.Where(x => x.Id == lastId).FirstOrDefault();
+				limit = lastMessage.Created;
+			}
 
             var result = dbContext.Messages
                 .Include(x => x.Session.User)
                 .Where(x => x.Board == board)
-                .Where(x => x.Created >= limit)
+                .Where(x => x.Created > limit)
                 .OrderByDescending(x => x.Created)
                 .Take(2000)
                 .OrderBy(x => x.Created) // TakeLast is not supported
-                .Select(x => new MessageDto { Username = x.Session.User.Username, AvatarId = x.Session.User.Avatar.Id, Board = x.Board, Message = x.Message, Created = x.Created })
+                .Select(x => new MessageDto { Id = x.Id, Username = x.Session.User.Username, AvatarId = x.Session.User.Avatar.Id, Board = x.Board, Message = x.Message, Created = x.Created })
                 .ToList();
 
             foreach (var m in result)

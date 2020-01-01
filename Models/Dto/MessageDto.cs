@@ -5,8 +5,12 @@ using System.Text.Json.Serialization;
 
 namespace Chat.Dto
 {
-	public class MessageDto {
-        [JsonPropertyName("username")]
+	public class MessageDto
+	{
+		[JsonPropertyName("id")]
+		public Guid Id { get; set; }
+
+		[JsonPropertyName("username")]
         public string Username { get; set; }
 
 		[JsonPropertyName("avatarId")]
@@ -20,5 +24,5 @@ namespace Chat.Dto
 
         [JsonPropertyName("created")]
         public DateTime Created { get; set; }
-    }
+	}
 }
