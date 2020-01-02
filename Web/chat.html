@@ -36,7 +36,7 @@
     <section id="chat-input">
         <form action="/send-message" method="post">
             <label for="message"></label>
-            <textarea type="text" name="message"></textarea>
+            <textarea type="text" name="message" id="chat-input-textarea"></textarea>
             <button class="input-submit">Send</button>
         </form>
     </section>
@@ -47,8 +47,22 @@
         function init() {
             setupChatboxInital();
 			setupActiveUsers();
+			setupChatInput();
 
 			//setInterval(setupMessagePolling, 1000);
+		}
+
+		function setupChatInput() {
+			let input = document.getElementById("chat-input-textarea");
+			input.addEventListener("keypress", submitEnter);
+            input.focus();
+
+			function submitEnter(event) {
+				if (event.which === 13 && event.shiftKey === false) {
+					event.preventDefault();
+					event.target.form.dispatchEvent(new Event("submit", { cancelable: true }));
+				}
+			}
 		}
 
 		function setupMessagePolling() {
