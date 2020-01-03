@@ -37,7 +37,8 @@ namespace Chat
             services.AddScoped<AuthService>();
             services.AddScoped<SessionService>();
             services.AddScoped<ChatService>();
-            services.AddScoped<UploadService>();
+			services.AddScoped<FragmentService>();
+			services.AddScoped<UploadService>();
 
             services.AddControllers();
         }

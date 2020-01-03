@@ -17,13 +17,15 @@ namespace Chat.Controllers
         private readonly ChatService chatService;
         private readonly SessionService sessionService;
         private readonly UploadService uploadService;
+		private readonly FragmentService fragmentService;
 
-        public IndexController(AuthService authService, ChatService chatService, SessionService sessionService, UploadService uploadService)
+		public IndexController(AuthService authService, ChatService chatService, SessionService sessionService, UploadService uploadService, FragmentService fragmentService)
 		{
             this.authService = authService;
             this.chatService = chatService;
             this.sessionService = sessionService;
             this.uploadService = uploadService;
+			this.fragmentService = fragmentService;
         }
 
 		[HttpGet]
@@ -32,10 +34,16 @@ namespace Chat.Controllers
 		{
             string html;
 
-            if (sessionService.IsAuthenticated())
-                html = System.IO.File.ReadAllText("Web/chat.html");
+			if (sessionService.IsAuthenticated())
+			{
+				var history = chatService.GetHistory("main");
+				var userList = chatService.GetActiveUsers("main");
+                html = fragmentService.Chat(history, userList);
+			}
             else
-                html = System.IO.File.ReadAllText("Web/landing.html");
+			{
+                html = fragmentService.Landing();
+			}
 
             return new ContentResult
             {
@@ -66,7 +74,7 @@ namespace Chat.Controllers
 
 			foreach (var message in history)
 			{
-				result.Content += RenderHtmlMessage(message);
+				result.Content += fragmentService.RenderHtmlMessage(message);
 			}
 
 			return result;
@@ -91,7 +99,7 @@ namespace Chat.Controllers
 
 			foreach (var message in history)
 			{
-				result.Content += RenderHtmlMessage(message);
+				result.Content += fragmentService.RenderHtmlMessage(message);
 			}
 
 			return result;
@@ -106,7 +114,7 @@ namespace Chat.Controllers
 
 			foreach (var user in userList)
 			{
-				result.Content += RenderHtmlUser(user);
+				result.Content += fragmentService.RenderHtmlUser(user);
 			}
 
 			return result;
@@ -179,89 +187,5 @@ namespace Chat.Controllers
 
             return new RedirectResult("/");
         }
-
-
-		// Fix: Move to helper class.
-		private string RenderHtmlMessage(MessageDto message)
-		{
-			var messageHtml = EncodeHtml(message.Message);
-			var messageFinal = RenderHtmlUrl(messageHtml);
-
-			var html = @$"
-<div class='message-overall-container' data-message-id='{message.Id}'>
-	<div class='message-container'>
-		<span class='message-avatar-container'><img class='message-avatar' src='/api/avatar/{message.AvatarId}'></span>
-		<p class='message-content'>
-			<time class='message-time' datetime='{message.Created.ToString("yyyy-MM-ddTHH:mm:ssZ")}'>({message.Created.ToString("HH:mm")} UTC)</time>
-			<span class='message-username'>{EncodeHtml(message.Username)}</span>:
-			<span class='message-text'>{messageFinal}</span>
-		</p>
-	</div>
-	{RenderHtmlMessageImages(message)}
-</div>";
-
-			return html;
-		}
-
-		private string RenderHtmlUser(UserDto user)
-		{
-			var html = $@"
-<div class='userlist-container'>
-	<span class='userlist-avatar-container'><img class='userlist-avatar' src='/api/avatar/{user.AvatarId}'></span>
-	<span>{EncodeHtml(user.Username)}</span>
-</div>";
-
-			return html;
-		}
-
-		private string RenderHtmlUrl(string message)
-		{
-			var regex = new Regex("url\"(.*?)\"");
-			var result = regex.Replace(message, x => {
-				var urlText = x.Groups[1].ToString();
-				var urlLink = urlText;
-				// Fix: This is sorta ghetto, but it works as long as there isn't any :// in another part of the url.
-				if (urlLink.Contains("://") == false)
-					urlLink = "https://" + urlLink;
-
-				var html = $"<a href='{EncodeUrl(urlLink)}' target='_blank' rel='noreferrer noopener'>{EncodeHtml(urlText)}</a>";
-				return html;
-			});
-
-			return result;
-		}
-
-		private string RenderHtmlMessageImages(MessageDto message)
-		{
-			var result = "";
-			var regex = new Regex("img\"(.*?)\"");
-			var matchList = regex.Matches(message.Message);
-			foreach (Match match in matchList)
-			{
-				result += $"<div class='image-container'><img class='image-message' src='{EncodeUrl(match.Groups[1].ToString())}'></div>";
-			}
-
-			return result;
-		}
-
-		private string EncodeHtml(string text)
-		{
-			// Fix: make good
-			return text
-				.Replace("&", "&amp;")
-				.Replace("<", "&lt;")
-				.Replace(">", "&gt;");
-		}
-
-		private string EncodeUrl(string text)
-		{
-			// Fix: make good
-			return text
-				.Replace("\"", "%22")
-				.Replace("\'", "%27")
-				.Replace("`", "%60")
-				.Replace("\\", "\\\\");
-		}
-
 	}
 }
