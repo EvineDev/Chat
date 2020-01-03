@@ -21,18 +21,6 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.0.1" />
   </ItemGroup>
 
-  <Target Name="ChatHtmlBuild" AfterTargets="AfterBuild">
-    <Copy SourceFiles="Web/chat.html" DestinationFolder="$(OutDir)/Web" />
-  </Target>
-  <Target Name="ChatHtmlPublish" AfterTargets="Publish">
-    <Copy SourceFiles="Web/chat.html" DestinationFolder="$(PublishDir)/Web" />
-  </Target>
-  <Target Name="ChatHtmlBuild2" AfterTargets="AfterBuild">
-    <Copy SourceFiles="Web/landing.html" DestinationFolder="$(OutDir)/Web" />
-  </Target>
-  <Target Name="ChatHtmlPublish2" AfterTargets="Publish">
-    <Copy SourceFiles="Web/landing.html" DestinationFolder="$(PublishDir)/Web" />
-  </Target>
   <Target Name="ChatCssBuild" AfterTargets="AfterBuild">
     <Copy SourceFiles="Web/style.css" DestinationFolder="$(OutDir)/Web" />
   </Target>
