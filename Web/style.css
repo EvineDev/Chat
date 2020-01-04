@@ -194,6 +194,12 @@ nav {
 	white-space: pre-line;
 }
 
+.message-emote {
+	max-width: 2em;
+	max-height: 2em;
+	margin-bottom: -5px;
+}
+
 .image-container {
 	display: flex;
 	justify-content: center;

@@ -15,9 +15,9 @@ namespace Chat.Service
 {
     public class FragmentService
     {
-        public FragmentService()
+		public FragmentService()
         {
-        }
+		}
 
 		public string Chat(List<MessageDto> messageList, List<UserDto> userList)
 		{
@@ -112,7 +112,8 @@ namespace Chat.Service
 		public string RenderHtmlMessage(MessageDto message)
 		{
 			var messageHtml = EncodeHtml(message.Message);
-			var messageFinal = RenderHtmlUrl(messageHtml);
+			var messageUrl = RenderHtmlUrl(messageHtml);
+			var messageFinal = RenderHtmlEmote(messageUrl);
 
 			var html = @$"
 <div class='message-overall-container' data-message-id='{message.Id}'>
@@ -152,6 +153,19 @@ namespace Chat.Service
 					urlLink = "https://" + urlLink;
 
 				var html = $"<a href='{EncodeUrl(urlLink)}' target='_blank' rel='noreferrer noopener'>{EncodeHtml(urlText)}</a>";
+				return html;
+			});
+
+			return result;
+		}
+
+		private string RenderHtmlEmote(string message)
+		{
+			var regex = new Regex(":(\\w*):");
+			var result = regex.Replace(message, x => {
+				var emote = x.Groups[1].ToString();
+
+				var html = $"<img class='message-emote' src='/api/emote/{EncodeUrl(emote)}'>";
 				return html;
 			});
 

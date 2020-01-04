@@ -26,7 +26,20 @@ namespace Chat.Controllers
 			return chatService.GetHistory(board);
 		}
 
-        [HttpPost]
+		[HttpGet]
+		[Route("emote/{emote}")]
+		public IActionResult Emote(string emote)
+		{
+			BinaryDto avatar;
+			if (emote == "yay")
+				avatar = chatService.GetAvatar(Guid.Parse("aefee463-0294-47ad-b936-f1418515d0f9"));
+			else
+				return new ContentResult { StatusCode = 404 };
+
+			return new FileContentResult(avatar.Data, avatar.ContentType);
+		}
+
+		[HttpPost]
 		[Route("send-message")]
 		public void SendMessage([FromBody]MessageDto value)
 		{
@@ -48,5 +61,5 @@ namespace Chat.Controllers
 
             return new FileContentResult(avatar.Data, avatar.ContentType);
         }
-    }
+	}
 }
