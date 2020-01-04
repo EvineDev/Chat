@@ -21,6 +21,12 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.0.1" />
   </ItemGroup>
 
+  <Target Name="ChatJsBuild" AfterTargets="AfterBuild">
+    <Copy SourceFiles="Web/main.js" DestinationFolder="$(OutDir)/Web" />
+  </Target>
+  <Target Name="ChatJsPublish" AfterTargets="Publish">
+    <Copy SourceFiles="Web/main.js" DestinationFolder="$(PublishDir)/Web" />
+  </Target>
   <Target Name="ChatCssBuild" AfterTargets="AfterBuild">
     <Copy SourceFiles="Web/style.css" DestinationFolder="$(OutDir)/Web" />
   </Target>

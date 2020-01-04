@@ -66,6 +66,19 @@ namespace Chat.Controllers
         }
 
 		[HttpGet]
+		[Route("main.js")]
+		public ContentResult MainJs()
+		{
+			var js = System.IO.File.ReadAllText("Web/main.js");
+
+			return new ContentResult
+			{
+				ContentType = "text/javascript",
+				Content = js,
+			};
+		}
+
+		[HttpGet]
 		[Route("message-history/{board}")]
 		public ContentResult History([FromRoute]string board)
 		{

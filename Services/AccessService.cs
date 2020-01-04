@@ -19,6 +19,7 @@ namespace Chat.Service
         {
             "/",
             "/style.css",
+			"/main.js",
 
             "/login",
             "/logout",
