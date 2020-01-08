@@ -9,9 +9,11 @@ using System.ComponentModel.DataAnnotations;
 namespace Chat.Db
 {
 	public class MessageDb : BaseDb
-    {
-        [Required]
-        public SessionDb Session { get; set; }
+	{
+		[Required]
+		public UserDb User { get; set; }
+
+		public SessionDb Session { get; set; }
 
         [Required]
         public string Board { get; set; }

@@ -19,19 +19,25 @@ namespace Chat.Service
 
         private readonly DatabaseContext dbContext;
         private readonly HttpContext context;
+		private readonly SessionService sessionService;
 
-        public AuthService(IHttpContextAccessor httpContextAccessor, DatabaseContext dbContext)
+		public AuthService(IHttpContextAccessor httpContextAccessor, DatabaseContext dbContext, SessionService sessionService)
         {
             this.dbContext = dbContext;
             this.context = httpContextAccessor.HttpContext;
-        }
+			this.sessionService = sessionService;
+
+		}
 
         public void Logout()
         {
-            // Fix: auth before logout
+			// Fix: auth before logout
+			var session = sessionService.TryGetSession();
+			if (session == null)
+				return;
 
-            //context.Request.Cookies.Where(x => x.Key).Single
-            context.Response.Cookies.Delete(AUTH_SESSION);
+			//context.Request.Cookies.Where(x => x.Key).Single
+			context.Response.Cookies.Delete(AUTH_SESSION);
             //dbContext.Sessions.Where().Remove();
             //dbContext.SaveChanges();
         }

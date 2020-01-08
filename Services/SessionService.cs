@@ -22,7 +22,12 @@ namespace Chat.Service
             return session;
         }
 
-        public void SetSession(SessionDb newSession)
+		public SessionDb TryGetSession()
+		{
+			return session;
+		}
+
+		public void SetSession(SessionDb newSession)
         {
             if (newSession == null)
                 throw new Exception("Trying to set null session");

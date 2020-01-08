@@ -34,13 +34,13 @@ namespace Chat.Service
 			}
 
             var result = dbContext.Messages
-                .Include(x => x.Session.User)
+                .Include(x => x.User)
                 .Where(x => x.Board == board)
                 .Where(x => x.Created > limit)
                 .OrderByDescending(x => x.Created)
                 .Take(2000)
                 .OrderBy(x => x.Created) // TakeLast is not supported
-                .Select(x => new MessageDto { Id = x.Id, Username = x.Session.User.Username, AvatarId = x.Session.User.Avatar.Id, Board = x.Board, Message = x.Message, Created = x.Created })
+                .Select(x => new MessageDto { Id = x.Id, Username = x.User.Username, AvatarId = x.User.Avatar.Id, Board = x.Board, Message = x.Message, Created = x.Created })
                 .ToList();
 
             foreach (var m in result)
@@ -64,9 +64,12 @@ namespace Chat.Service
 
         public void SendMessage(string board, string message)
 		{
-            dbContext.Messages.Add(new MessageDb
+			var session = authService.GetSession();
+
+			dbContext.Messages.Add(new MessageDb
 			{
-                Session = authService.GetSession(),
+				User = session.User,
+                Session = session,
 				Board = board,
 				Message = message,
                 Created = DateTime.UtcNow,
