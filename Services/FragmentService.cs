@@ -93,6 +93,26 @@ namespace Chat.Service
 </body>");
 		}
 
+		public string Logout()
+		{
+			return Layout("logout", @$"
+<body>
+    <header>
+		<h1>My Little Game Chat</h1>
+    </header>
+	<section>
+        <form action='/logout-current' method='post'>
+            <button>Logout from this computer</button>
+        </form>
+    </section>
+    <section>
+		<form action='/logout-all' method='post'>
+			<button>Logout from everywhere</button>
+		</form>
+    </section>
+</body>");
+		}
+
 		public string Layout(string page, string html)
 		{
 			return @$"

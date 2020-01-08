@@ -158,6 +158,7 @@ namespace Chat.Controllers
             }
             else
             {
+				throw new NotImplementedException();
                 var html = System.IO.File.ReadAllText("Web/chat.html");
 
                 return new ContentResult
@@ -171,13 +172,41 @@ namespace Chat.Controllers
 
         [HttpPost]
         [Route("logout")]
-        public ActionResult Logout()
+        public ActionResult LogoutPost()
         {
             authService.Logout();
-            return new RedirectResult("/");
+            return new RedirectResult("/logout");
         }
 
-        [HttpPost]
+		[HttpGet]
+		[Route("logout")]
+		public ActionResult Logout()
+		{
+			var html = fragmentService.Logout();
+			return new ContentResult
+			{
+				ContentType = "text/html",
+				Content = html,
+			};
+		}
+
+		[HttpPost]
+		[Route("logout-current")]
+		public ActionResult LogoutCurrentSession()
+		{
+            authService.Logout();
+			return new RedirectResult("/");
+		}
+
+		[HttpPost]
+		[Route("logout-all")]
+		public ActionResult LogoutAllSessions()
+		{
+			authService.LogoutAll();
+			return new RedirectResult("/");
+		}
+
+		[HttpPost]
         [Route("register")]
         public ActionResult Register([FromForm]string email, [FromForm]string username, [FromForm]string password, [FromForm]string capcha)
         {

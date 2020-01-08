@@ -9,7 +9,9 @@ function init() {
     if (page == "chat") {
         init_chat();
     } else if (page == "landing") {
-		init_landing();
+        init_landing();
+    } else if (page == "logout") {
+
     } else {
         console.error("Unknown page: " + page);
     }

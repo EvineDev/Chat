@@ -23,7 +23,9 @@ namespace Chat.Service
 
             "/login",
             "/logout",
-            "/register",
+			"/logout-current",
+			"/logout-all",
+			"/register",
             "/api/login",
         };
 

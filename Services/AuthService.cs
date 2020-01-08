@@ -36,7 +36,17 @@ namespace Chat.Service
             //dbContext.SaveChanges();
         }
 
-        public bool Register(string email, string username, string password, string capcha)
+		public void LogoutAll()
+		{
+			// Fix: auth before logout
+
+			//context.Request.Cookies.Where(x => x.Key).Single
+			context.Response.Cookies.Delete(AUTH_SESSION);
+			//dbContext.Sessions.Where().Remove();
+			//dbContext.SaveChanges();
+		}
+
+		public bool Register(string email, string username, string password, string capcha)
         {
 			// Fix: Add proper capcha
 			if (capcha != "pony-capcha")
