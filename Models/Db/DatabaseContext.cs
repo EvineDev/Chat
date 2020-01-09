@@ -24,6 +24,8 @@ namespace Chat.Db
 
 		public DbSet<BinaryDb> Binary { get; set; }
 
+		public DbSet<LogoutTokenDb> LogoutToken { get; set; }
+
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<UserDb>()

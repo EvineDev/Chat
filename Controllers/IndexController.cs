@@ -182,6 +182,11 @@ namespace Chat.Controllers
 		[Route("logout")]
 		public ActionResult Logout()
 		{
+			var session = sessionService.TryGetSession();
+			//var logoutToken =
+			if (session == null)
+				return new RedirectResult("/");
+
 			var html = fragmentService.Logout();
 			return new ContentResult
 			{

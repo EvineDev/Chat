@@ -140,6 +140,11 @@ namespace Chat.Service
             return sessionDb;
         }
 
+		private void GenerateLogoutToken(UserDb session)
+		{
+			var key = GetRandom(32);
+		}
+
         private SessionDb GenerateSession(UserDb user)
         {
             var newRefreshKey = GetRandom(47);
