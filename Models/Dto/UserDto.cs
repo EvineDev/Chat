@@ -5,7 +5,8 @@ using System.Text.Json.Serialization;
 
 namespace Chat.Dto
 {
-	public class UserDto {
+	public class UserDto
+	{
         [JsonPropertyName("avatarId")]
         public Guid AvatarId { get; set; }
 

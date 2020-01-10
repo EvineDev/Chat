@@ -5,7 +5,8 @@ using System.Text.Json.Serialization;
 
 namespace Chat.Dto
 {
-	public class BinaryDto {
+	public class BinaryDto
+	{
         [JsonPropertyName("contentType")]
         public string ContentType { get; set; }
 
