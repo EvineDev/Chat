@@ -18,5 +18,8 @@ namespace Chat.Db
 
 		[Required]
         public byte[] TokenKey { get; set; }
+		
+		[Required]
+		public byte[] TokenSalt { get; set; }
 	}
 }

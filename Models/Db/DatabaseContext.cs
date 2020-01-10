@@ -28,6 +28,12 @@ namespace Chat.Db
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+			//modelBuilder.Entity<MessageDb>()
+			//	.HasOne(x => x.Session)
+			//	.WithMany(x => x.Messages)
+			//	.HasForeignKey(x => x.Session)
+			//	.OnDelete(DeleteBehavior.SetNull);
+
             //modelBuilder.Entity<UserDb>()
             //    .HasAlternateKey(x => x.UserId);
         }

@@ -173,9 +173,15 @@ namespace Chat.Controllers
         [HttpPost]
         [Route("logout")]
         public ActionResult LogoutPost()
-        {
-            authService.Logout();
-            return new RedirectResult("/logout");
+		{
+			var session = sessionService.TryGetSession();
+			if (session == null)
+				return new RedirectResult("/");
+
+			authService.GenerateLogoutToken(session.User);
+			authService.Logout(session);
+
+			return new RedirectResult("/logout");
         }
 
 		[HttpGet]
@@ -183,8 +189,9 @@ namespace Chat.Controllers
 		public ActionResult Logout()
 		{
 			var session = sessionService.TryGetSession();
-			//var logoutToken =
-			if (session == null)
+			var logoutToken = authService.AuthenticateLogoutToken();
+			var user = session?.User ?? logoutToken?.User;
+			if (user == null)
 				return new RedirectResult("/");
 
 			var html = fragmentService.Logout();
@@ -199,7 +206,13 @@ namespace Chat.Controllers
 		[Route("logout-current")]
 		public ActionResult LogoutCurrentSession()
 		{
-            authService.Logout();
+			var session = sessionService.TryGetSession();
+			var logoutToken = authService.AuthenticateLogoutToken();
+			authService.RemoveLogoutToken(logoutToken);
+			if (session == null)
+				return new RedirectResult("/");
+
+			authService.Logout(session);
 			return new RedirectResult("/");
 		}
 
@@ -207,7 +220,13 @@ namespace Chat.Controllers
 		[Route("logout-all")]
 		public ActionResult LogoutAllSessions()
 		{
-			authService.LogoutAll();
+			var session = sessionService.TryGetSession();
+			var logoutToken = authService.AuthenticateLogoutToken();
+			var user = session?.User ?? logoutToken?.User;
+			if (user == null)
+				return new RedirectResult("/");
+
+			authService.LogoutAll(user);
 			return new RedirectResult("/");
 		}
 

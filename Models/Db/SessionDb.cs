@@ -28,6 +28,6 @@ namespace Chat.Db
         [Required]
         public byte[] RefreshSalt { get; set; }
 
-        //public SessionDb NextSession { get; set; }
-    }
+		//public SessionDb NextSession { get; set; }
+	}
 }

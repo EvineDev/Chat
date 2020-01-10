@@ -10,14 +10,16 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Security.Cryptography;
+using Chat.Dto;
 
 namespace Chat.Service
 {
 	public class AuthService
 	{
         public static readonly string AUTH_SESSION = ".Auth.Session";
+		public static readonly string AUTH_LOGOUT_TOKEN = ".Auth.LogoutToken";
 
-        private readonly DatabaseContext dbContext;
+		private readonly DatabaseContext dbContext;
         private readonly HttpContext context;
 		private readonly SessionService sessionService;
 
@@ -29,27 +31,28 @@ namespace Chat.Service
 
 		}
 
-        public void Logout()
+        public void Logout(SessionDb sessionDb)
         {
-			// Fix: auth before logout
-			var session = sessionService.TryGetSession();
-			if (session == null)
-				return;
-
-			//context.Request.Cookies.Where(x => x.Key).Single
 			context.Response.Cookies.Delete(AUTH_SESSION);
-            //dbContext.Sessions.Where().Remove();
-            //dbContext.SaveChanges();
-        }
+			dbContext.Sessions.Remove(sessionDb);
+			// Fix: Currently we have to null out any refrences to sessions. Is there a way to say that references might be invalid?
+			var messages = dbContext.Messages.Include(x => x.Session).Where(x => x.Session.Id == sessionDb.Id).ToList();
+			dbContext.SaveChanges();
+		}
 
-		public void LogoutAll()
+		public void LogoutAll(UserDb userDb)
 		{
-			// Fix: auth before logout
-
-			//context.Request.Cookies.Where(x => x.Key).Single
 			context.Response.Cookies.Delete(AUTH_SESSION);
-			//dbContext.Sessions.Where().Remove();
-			//dbContext.SaveChanges();
+			context.Response.Cookies.Delete(AUTH_LOGOUT_TOKEN);
+			var logoutTokens = dbContext.LogoutToken.Include(x => x.User).Where(x => x.User.Id == userDb.Id).ToList();
+			var sessions = dbContext.Sessions.Include(x => x.User).Where(x => x.User.Id == userDb.Id).ToList();
+			// Fix: Currently we have to null out any refrences to sessions. Is there a way to say that references might be invalid?
+			var messages = dbContext.Messages.Include(x => x.Session.User).Where(x => x.Session.User.Id == userDb.Id).ToList();
+			messages.ForEach(x => x.Session = null);
+
+			dbContext.Sessions.RemoveRange(sessions);
+			dbContext.LogoutToken.RemoveRange(logoutTokens);
+			dbContext.SaveChanges();
 		}
 
 		public bool Register(string email, string username, string password, string capcha)
@@ -140,12 +143,77 @@ namespace Chat.Service
             return sessionDb;
         }
 
-		private void GenerateLogoutToken(UserDb session)
+		public void GenerateLogoutToken(UserDb user)
 		{
 			var key = GetRandom(32);
+			var keySalt = GetRandom(16);
+			var keyHash = GetRefreshKeyHashed(key, keySalt);
+
+			var logoutToken = new LogoutTokenDb
+			{
+				Created = DateTime.UtcNow,
+				TokenKey = keyHash,
+				TokenSalt = keySalt,
+				User = user,
+			};
+
+			dbContext.LogoutToken.Add(logoutToken);
+			dbContext.SaveChanges();
+
+			var logoutTokenDto = new LogoutTokenDto
+			{
+				Id = logoutToken.Id,
+				TokenKey = Convert.ToBase64String(key),
+			};
+
+			var authOptions = new CookieOptions
+			{
+				MaxAge = new TimeSpan(0, 30, 0),
+			};
+
+			var sessionJson = JsonSerializer.Serialize(logoutTokenDto);
+			var sessionJsonBytes = System.Text.Encoding.UTF8.GetBytes(sessionJson);
+			var sessionBase64 = Convert.ToBase64String(sessionJsonBytes);
+			context.Response.Cookies.Append(AUTH_LOGOUT_TOKEN, sessionBase64, authOptions);
 		}
 
-        private SessionDb GenerateSession(UserDb user)
+		public LogoutTokenDb AuthenticateLogoutToken()
+		{
+			var logoutTokenBase64 = context.Request.Cookies[AUTH_LOGOUT_TOKEN];
+			if (logoutTokenBase64 == null)
+				return null;
+			var logoutTokenJsonBytes = Convert.FromBase64String(logoutTokenBase64);
+			var logoutTokenJson = System.Text.Encoding.UTF8.GetString(logoutTokenJsonBytes);
+
+			var logoutTokenDto = JsonSerializer.Deserialize<LogoutTokenDto>(logoutTokenJson);
+			var logoutTokenDb = dbContext.LogoutToken
+				.Include(x => x.User)
+				.Where(x => x.Id == logoutTokenDto.Id)
+				.FirstOrDefault();
+			if (logoutTokenDb == null)
+				return null;
+
+			var tokenKeyDto = Convert.FromBase64String(logoutTokenDto.TokenKey);
+			var tokenHashDb = GetRefreshKeyHashed(tokenKeyDto, logoutTokenDb.TokenSalt);
+			if (tokenHashDb == null)
+				return null;
+			if (tokenHashDb.SequenceEqual(logoutTokenDb.TokenKey) == false)
+				return null;
+
+			return logoutTokenDb;
+		}
+
+		public void RemoveLogoutToken(LogoutTokenDb logoutToken)
+		{
+			// Fix: Delete from Db
+			context.Response.Cookies.Delete(AUTH_LOGOUT_TOKEN);
+			
+			dbContext.LogoutToken.Remove(logoutToken);
+			dbContext.SaveChanges();
+		}
+
+
+		private SessionDb GenerateSession(UserDb user)
         {
             var newRefreshKey = GetRandom(47);
             var newRefreshSalt = GetRandom(17);
